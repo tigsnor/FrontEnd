@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J23CustomVideo.html</title>
+</head>
+<body>
+    <h2>Javascript를 잉요한 커스텀 비디오 만들기</h2>
+    <!-- 
+
+     -->
+    <div>
+        <video id="video" width="300" height="200"
+         src="./media/video.mp4" muted autoplay controls poster="./images/html5.png"></video>
+    </div>
+    <!-- 진행사항출력 -->
+    <div>
+        <progress value="0" id="progress" style="width: 300px;"></progress>
+    </div>
+
+    <div>
+        <span id="currenttime"></span> / <span id="totaltime"></span>
+    </div>
+    <input type="button" value="재생하기" onclick="play();">
+    <input type="button" value="일시정지" onclick="stop();">
+    <input type="button" value="처음부터 재생하기" onclick="start();">
+    <input type="button" value="볼륨+" onclick="setVolumn(1)">
+    <input type="button" value="볼륨-" onclick="setVolumn(-1)">
+    <input type="button" value="음소거" onclick="setVolumn(0)">
+    <input type="button" value="재생속도+" onclick="setPlaybackRate(1)">
+    <input type="button" value="재생속도-" onclick="setPlaybackRate(-1)">
+    <input type="button" value="10초앞으로" onclick="setTime(1)">
+    <input type="button" value="10초뒤로" onclick="setTime(-1)">
+
+    <script>
+        var video;
+        window.onload = function () {
+            var currentSpan = document.getElementById("currenttime");
+            var totalSpan = document.getElementById("totaltime");
+            video = document.getElementById("video");
+            video.setVolumn = 0.5;
+            /*
+
+            */
+            video.addEventListener("timeupdate", function() {
+                currentSpan.innerHTML = timeShow(video.currentTime);
+                totalSpan.innerHTML = video.duration;
+
+                progress.max = video.duration;
+                progress.value = video.currentTime;
+            });
+        }
+        function play(){
+            video.hidden = "";
+            video.play();
+        }
+
+        function stop(){
+            video.hidden = true;
+            video.pause();
+        }
+
+        function start() {
+            video.currentTime = 0;
+            video.play();
+        }
+        /*
+
+        */
+        function timeShow(seconds) {
+            seconds = Math.round(seconds);
+            var h = parseInt(seconds / 3600);//시간을 구함
+            var m = parseInt((seconds % 3600) / 60);//분을 구함
+            var s = seconds %60;//초를 구함
+            /*
+
+            */
+            var hour = (h<10)? '0'+h : h;//
+            var min = (m<10)? '0'+m : m;//
+            var sec = (s<10)? '0'+s : s;//
+            
+            return hour+":"+min+":"+sec;
+        }
+        //볼륨 조절
+        function setVolumn(value){
+            if (value == 0){
+                video.muted = true;//음소거 처리
+            }
+            else{
+                video.muted = false;//음소거 해제
+                var nowVolume = video.volume;
+                if(value==1){//1을 초과하면 1로 맞춤설정
+                    noVolume += 0.1;
+                    video.volume = (nowVolume>1) ? 1 : noVolume;
+                }
+                else{//음수가 되면 0으로 맞춤설정
+                    nowVolume -= 0.1;
+                    video.volume = (nowVolume <0)? 0 : nowVolume;
+                }
+            }
+        }
+        //재생속도
+        function setPlaybackRate(value){
+            if (value ==1){
+                video.playbackRate += 0.25;
+            }
+            else{
+                video.playbackRate -= 0.25;
+            }
+        }
+        function setTime(value){
+            if (value ==1){
+                video.currentTime += 10;
+            }
+            else{
+                video.currentTime -= 10;
+            }
+        }
+    </script>
+    <style>
+        div{
+            border: 1px solid red;
+            width: 300px;
+        }
+    </style>
+</body>
+</html>
